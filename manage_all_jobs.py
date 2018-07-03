@@ -35,7 +35,13 @@ def main(action):
                 # update the return value
                 retval = proc.poll()
 
+            return_code = proc.returncode
 
+            if return_code != 0:
+                raise Exception("Failed")
+
+            else:
+                print stdout
 
 
 if __name__ == '__main__':
