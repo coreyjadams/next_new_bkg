@@ -22,7 +22,7 @@ stages:
             # n_files: 1
         output:
             location: /n/holylfs02/LABS/guenette_lab/data/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/nexus/{element}/{region}/
-            dataset: NEW_{element}_{region}_10.1bar_nexus
+            dataset: NEW_{element}_{region}_10bar_nexus
             anaonly: false
             # Metadata information for the output dataset.  Inherits from parent if not specified here:
             experiment: next
