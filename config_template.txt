@@ -31,6 +31,6 @@
 
 /nexus/persistency/start_id {start_id}
 
-/nexus/persistency/outputFile nexus_NEW_NEXT_v1_03_01_{element}_{region}_5e5_{file_index}.next
+/nexus/persistency/outputFile nexus_NEW_NEXT_v1_03_01_{element}_{region}_{nevents}_{file_index}.next
 
 

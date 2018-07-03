@@ -32,7 +32,7 @@ class cd:
 
 def get_njobs(isotope, region):
     # First, find out the number of events needed:
-    n_events_total = event_count[isotope][region]
+    n_events_total = int(event_count[isotope][region])
 
     #Less than 5e6 events we run in just one job:
     if n_events_total <= 5E6:
@@ -47,7 +47,7 @@ def get_njobs(isotope, region):
 
     #Calculate the number of events per job:
 
-    events_per_job = int(n_events_total / 5000 + 1)
+    events_per_job = int(n_events_total / n_jobs )
 
     return n_jobs, events_per_job
 
@@ -98,6 +98,7 @@ def main():
                     # Write out a template config and init file:
                     this_config_name = config_name.format(element=element, region=region)
                     this_init_name   = init_name.format(element=element, region=region)
+                    n_jobs, events_per_job = get_njobs(isotope, region)
                     with open(this_config_name, 'w') as _config:
                         _config.write(
                             config_template.format(
@@ -108,13 +109,15 @@ def main():
                                 random_seed   = "{random_seed}",
                                 file_index    = "{file_index}",
                                 start_id      = start_id,
+                                nevents       = events_per_job,
                             )
                         )
                     with open(this_init_name, 'w') as _init:
                         _init.write(
                             init_template.format(
-                                element  = element,
-                                region   = region,
+                                element    = element,
+                                region     = region,
+                                file_index = "{file_index}",
                             )
                         )
 
@@ -122,7 +125,6 @@ def main():
                             _init.write('\n/nexus/RegisterDelayedMacro Bi214.mac\n')
 
 
-                    n_jobs, events_per_job = get_njobs(isotope, region)
                     extra = ""
                     if element == "Bi":
                         extra='''extra_scripts:

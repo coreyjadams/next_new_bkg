@@ -17,7 +17,7 @@
 /Actions/RegisterSteppingAction DEFAULT
 /Actions/RegisterRunAction DEFAULT
 
-/nexus/RegisterMacro nexus_{element}_{region}_0_config.mac
+/nexus/RegisterMacro nexus_{element}_{region}_{file_index}_config.mac
 
 
 
