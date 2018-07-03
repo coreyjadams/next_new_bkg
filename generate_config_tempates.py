@@ -128,7 +128,7 @@ def main():
                     extra = ""
                     if element == "Bi":
                         extra='''extra_scripts:
-                - /n/holylfs02/LABS/guenette_lab/users/cadams/next/nexus/Bi214.mac'''
+                - /n/holylfs02/LABS/guenette_lab/users/cadams/next/Releases/nexus/macros/physics/Bi214.mac'''
                     with open(yml_name.format(element=element, region=region), 'w') as _yml:
                         _yml.write(
                             nexus_yml_template.format(
