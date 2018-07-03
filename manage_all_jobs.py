@@ -1,4 +1,6 @@
 import os, sys
+import subprocess
+
 
 from configuration import regions, isotopes, event_count, atomic_numbers, mass_numbers
 
