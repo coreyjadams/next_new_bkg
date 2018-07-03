@@ -9,10 +9,8 @@ software: "/n/holylfs02/LABS/guenette_lab/production/next_new_bkg/nexus.yml"
 stages:
 
     - {element}:
-        config:
-            - /n/holylfs02/LABS/guenette_lab/production/next_new_bkg/{element}/{region}/{config_name}
-        init:
-            - /n/holylfs02/LABS/guenette_lab/production/next_new_bkg/{element}/{region}/{init_name}
+        config: /n/holylfs02/LABS/guenette_lab/production/next_new_bkg/{element}/{region}/{config_name}
+        init: /n/holylfs02/LABS/guenette_lab/production/next_new_bkg/{element}/{region}/{init_name}
         {extra}
         n_jobs: {n_jobs}
         max_concurrent_jobs: {n_jobs}
