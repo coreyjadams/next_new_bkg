@@ -1,0 +1,34 @@
+# Global header information:
+name: nexus_{element}_{region}
+# REQUIRED: top project dirctory, work files go here, output files can be elsewhere
+top_dir: /n/holylfs02/LABS/guenette_lab/data/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/nexus/{element}/{region}/
+
+# Block for defining the larsoft setup. Reference a file
+software: "/n/holylfs02/LABS/guenette_lab/production/next_new_bkg/nexus.yml"
+
+stages:
+
+    - {element}:
+        config:
+            - /n/holylfs02/LABS/guenette_lab/production/next_new_bkg/{element}/{region}/{config_name}
+        init:
+            - /n/holylfs02/LABS/guenette_lab/production/next_new_bkg/{element}/{region}/{init_name}
+        {extra}
+        n_jobs: {n_jobs}
+        max_concurrent_jobs: {n_jobs}
+        events_per_job: {events_per_job}
+        input:
+            dataset: none # Can be none or a name
+            # n_files: 1
+        output:
+            location: /n/holylfs02/LABS/guenette_lab/data/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/nexus/{element}/{region}/
+            dataset: NEW_{element}_{region}_10.1bar_nexus
+            anaonly: false
+            # Metadata information for the output dataset.  Inherits from parent if not specified here:
+            experiment: next
+            project: calibration
+            subproject: nexus
+            slice: {element}
+        memory: 4000
+        time: 48:00:00
+

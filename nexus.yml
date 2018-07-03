@@ -1,0 +1,5 @@
+type: nexus
+executable: /n/holylfs02/LABS/guenette_lab/users/cadams/next/Releases/nexus/nexus
+# REQUIRED: Setup script
+setup_scripts:
+    - /n/holylfs02/LABS/guenette_lab/users/cadams/next/Releases/NEXT_v1_03_01/setup.sh

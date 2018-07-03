@@ -1,0 +1,36 @@
+
+### --------------------------------------------------------
+###  Next: Configuration macro of nexus.
+### --------------------------------------------------------
+
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/nexus/random_seed {random_seed}
+
+# GENERATION
+/Generator/IonGun/atomic_number {atomic_number}
+/Generator/IonGun/mass_number {mass_number}
+/Generator/IonGun/region {region}
+
+
+# ACTIONS
+/Actions/DefaultEventAction/energy_threshold 0.40 MeV
+
+# GEOMETRY
+/Geometry/NextNew/pressure 10.1 bar
+/Geometry/NextNew/elfield false
+
+/Geometry/NextNew/max_step_size 1. mm
+
+# PHYSICS
+/PhysicsList/Nexus/clustering          false
+/PhysicsList/Nexus/drift               false
+/PhysicsList/Nexus/electroluminescence false
+
+/nexus/persistency/start_id {start_id}
+
+/nexus/persistency/outputFile nexus_NEW_NEXT_v1_03_01_{element}_{region}_5e5_{file_index}.next
+
+
