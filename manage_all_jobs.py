@@ -72,7 +72,7 @@ def main():
     # Get the list of datasets that are in the production database:
     datasets = pr.list_datasets()
 
-    datasets = [ dataset for tupl in datasets for ds in tupl]
+    datasets = [ ds for tupl in datasets for ds in tupl]
 
     print datasets
 
