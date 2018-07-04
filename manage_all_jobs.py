@@ -80,11 +80,13 @@ def main():
         element = isotope.split('-')[0]
         for region in regions:
             yml_name = '{element}/{region}/nexus_{element}_{region}.yml'.format(element=element, region=region)
-            print yml_name
-            print stage.output_dataset()
+
             # Read in the yml file:
             pc = ProjectConfig(yml_name)
             stage = pc.stage(element)
+
+            print stage.output_dataset()
+
             # First, check if this project is in the database:
             if stage.output_dataset() in datasets:
                 # Check the output of this dataset.
