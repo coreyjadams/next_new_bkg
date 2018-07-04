@@ -1,5 +1,6 @@
 import os, sys
 import subprocess
+import time
 import sqlite3
 
 from configuration import regions, isotopes, event_count, atomic_numbers, mass_numbers
@@ -144,5 +145,4 @@ def main():
 
 if __name__ == '__main__':
 
-    action = sys.argv[-1]
     main()
