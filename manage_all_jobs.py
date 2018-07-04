@@ -114,7 +114,7 @@ def main():
                 if n_jobs_succeeded == n_jobs:
                     insertion_sql = '''
                         INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        VALUES (?, ?, ?, ?, ?, ?)
                     '''
                     curr = connect().cursor()
                     tupl = (stage.output_dataset(), element, region, total_events_submitted, total_events_produced, n_jobs)
