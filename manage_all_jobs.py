@@ -8,7 +8,6 @@ from configuration import regions, isotopes, event_count, atomic_numbers, mass_n
 from database import DatasetReader, ProjectReader
 from config import ProjectConfig
 
-
 from utils import ProjectHandler
 
 # This script checks the production of each set of files.  If it is finished,
@@ -28,11 +27,11 @@ def init_db():
         CREATE TABLE IF NOT EXISTS next_new_bkg_summary(
             id INTEGER AUTO_INCREMENT,
             dataset TEXT,
+            element TEXT,
+            region TEXT,
             n_simulated INTEGER,
             n_passed INTEGER,
             n_jobs INTEGER,
-            n_completed_jobs INTEGER,
-            complete BOOLEAN,
             PRIMARY KEY(id)
         )
     '''
@@ -110,10 +109,30 @@ def main():
                     total_events_produced,
                     total_events_submitted)
 
+                # If the number of jobs completed equals the number of jobs submitted,
+                # it's done.
 
+                if n_jobs_succeeded == n_jobs:
+                    insertion_sql = '''
+                        INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    '''
+                    curr = connect().cursor()
+                    tupl = (stage.output_dataset(), element, region, total_events_submitted, total_events_produced, n_jobs)
+                    curr.execute(insertion_sql, tupl)
+
+                elif n_jobs_succeeded == 0:
+                    # clean and resubmit
+                    ph = ProjectHandler(yml_name, action='clean', stage=element)
+                    ph.act()
+                    ph = ProjectHandler(yml_name, action='submit', stage=element)
+                else:
+                    # Doing makeup jobs, just report it:
+                    print "Requires makeup jobs"
             else:
                 # Need to submit it for the first time.
-
+                ph = ProjectHandler(yml_name, action='submit', stage=element)
+                ph.act()
                 print "Nothing submitted."
             # Find out how many
 
