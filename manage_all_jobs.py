@@ -73,8 +73,6 @@ def main():
 
     datasets = [ ds for tupl in datasets for ds in tupl]
 
-    print datasets
-
     for isotope in isotopes:
         element = isotope.split('-')[0]
         for region in regions:
@@ -173,4 +171,5 @@ if __name__ == '__main__':
     except:
         pass
     connect()
+    init_db()
     main()
