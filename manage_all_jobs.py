@@ -167,5 +167,10 @@ def main():
 
 
 if __name__ == '__main__':
-
+    # Delete the database, if it exist:
+    try:
+        os.path.remove('next_new_bkg.db')
+    except:
+        pass
+    connect()
     main()
