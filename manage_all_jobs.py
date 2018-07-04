@@ -72,6 +72,8 @@ def main():
     # Get the list of datasets that are in the production database:
     datasets = pr.list_datasets()
 
+    datasets = [ dataset for tupl in datasets for ds in tupl]
+
     print datasets
 
     for isotope in isotopes:
@@ -79,7 +81,7 @@ def main():
         for region in regions:
             yml_name = '{element}/{region}/nexus_{element}_{region}.yml'.format(element=element, region=region)
             print yml_name
-
+            print stage.output_dataset()
             # Read in the yml file:
             pc = ProjectConfig(yml_name)
             stage = pc.stage(element)
