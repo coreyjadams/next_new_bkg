@@ -59,10 +59,10 @@ def get_njobs(isotope, region):
     return n_jobs, events_per_job
 
 
-def main(action):
+def main():
 
-    if action not in ['--submit', '--status', '--check']:
-        raise Exception("action not supported.")
+    # if action not in ['--submit', '--status', '--check']:
+    #     raise Exception("action not supported.")
 
 
     pr = ProjectReader
@@ -145,4 +145,4 @@ def main(action):
 if __name__ == '__main__':
 
     action = sys.argv[-1]
-    main(action)
+    main()
