@@ -117,7 +117,7 @@ def main():
                         VALUES (?, ?, ?, ?, ?, ?)
                     '''
                     curr = connect().cursor()
-                    tupl = (stage.output_dataset(), element, region, total_events_submitted, total_events_produced, n_jobs)
+                    tupl = (stage.output_dataset(), element, region, int(total_events_submitted), int(total_events_produced), int(n_jobs))
                     curr.execute(insertion_sql, tupl)
 
                 elif n_jobs_succeeded == 0:
