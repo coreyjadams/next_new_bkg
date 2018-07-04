@@ -66,8 +66,8 @@ def main():
     #     raise Exception("action not supported.")
 
 
-    pr = ProjectReader
-    dr = DatasetReader
+    pr = ProjectReader()
+    dr = DatasetReader()
 
     # Get the list of datasets that are in the production database:
     datasets = pr.list_datasets()
