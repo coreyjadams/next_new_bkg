@@ -35,6 +35,7 @@ def init_db():
             PRIMARY KEY(id)
         )
     '''
+    c.execute(create_table_sql)
 
 
 def get_njobs(isotope, region):
@@ -120,6 +121,7 @@ def main():
                     curr.execute(insertion_sql, tupl)
 
                 elif n_jobs_succeeded == 0:
+                    print "Completely resubmitting {}".format(stage.output_dataset())
                     # clean and resubmit
                     ph = ProjectHandler(yml_name, action='clean', stage=element)
                     ph.act()
