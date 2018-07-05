@@ -60,7 +60,7 @@ def get_njobs(isotope, region):
     return n_jobs, events_per_job
 
 
-def main():
+def main(info_only):
 
     # if action not in ['--submit', '--status', '--check']:
     #     raise Exception("action not supported.")
@@ -124,17 +124,20 @@ def main():
                 elif n_jobs_succeeded == 0:
                     print bcolors.WARNING  + "{} - {} RESUBMIT".format(element, region) + bcolors.ENDC
                     # clean and resubmit
-                    ph = ProjectHandler(yml_name, action='clean', stage=element)
-                    ph.act()
-                    ph = ProjectHandler(yml_name, action='submit', stage=element)
+                    if not info_only:
+                        ph = ProjectHandler(yml_name, action='clean', stage=element)
+                        ph.act()
+                        ph = ProjectHandler(yml_name, action='submit', stage=element)
+                        ph.act()
                 else:
                     print bcolors.FAIL  + "{} - {} MAKEUP NEEDED".format(element, region) + bcolors.ENDC
                     # Doing makeup jobs, just report it:
             else:
                 # Need to submit it for the first time.
                 print bcolors.OKBLUE  + "{} - {} SUBMITTING".format(element, region) + bcolors.ENDC
-                ph = ProjectHandler(yml_name, action='submit', stage=element)
-                ph.act()
+                if not info_only:
+                    ph = ProjectHandler(yml_name, action='submit', stage=element)
+                    ph.act()
             # Find out how many
 
 
@@ -175,4 +178,4 @@ if __name__ == '__main__':
         pass
     connect()
     init_db()
-    main()
+    main(info_only = True)
