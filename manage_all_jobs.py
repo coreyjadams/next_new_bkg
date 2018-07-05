@@ -31,7 +31,8 @@ def init_db():
             region TEXT,
             n_simulated INTEGER,
             n_passed INTEGER,
-            n_jobs INTEGER,
+            n_jobs_submitted, INTEGER,
+            n_jobs_succeeded INTEGER,
             PRIMARY KEY(id)
         )
     '''
@@ -60,6 +61,98 @@ def get_njobs(isotope, region):
     return n_jobs, events_per_job
 
 
+def move_files_to_neutrino():
+
+    pr = ProjectReader()
+    dr = DatasetReader()
+
+    remote_host = 'cadams@neutrinos1.ific.uv.es'
+    remote_top_directory = '/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/'
+
+
+    # We want to copy, for every project here (76 + Xenon, eventually)
+    # The files, configurations, and logs.
+
+    # The remote directory structure should be:
+    # remote_top_directory/nexus/{element}/{region}/output
+    # remote_top_directory/nexus/{element}/{region}/log
+    # remote_top_directory/nexus/{element}/{region}/config
+
+    # The config files, logs, and output all live in the same directory.  So, what this script does
+    # is to generate a list files to/from for transfering.
+    # In otherwords, it will make a single text file that dictates the entire transfer.
+
+    with open('transfer_protocol.txt', 'w') as _trnsf:
+
+        for isotope in isotopes:
+            element = isotope.split('-')[0]
+            for region in regions:
+                yml_name = '{element}/{region}/nexus_{element}_{region}.yml'.format(element=element, region=region)
+
+                # Read in the yml file:
+                pc = ProjectConfig(yml_name)
+                stage = pc.stage(element)
+                dataset = stage.output_dataset()
+                output_dir = stage.output_directory()
+
+                # Get the log files, config files, and output files
+                config_match = '/*config.mac'
+                init_match = '/*init.mac'
+
+                log_match = '*.log'
+
+                output_file_list = dr.list_file_locations(dataset)
+                for _file in output_file_list:
+                    base = os.path.basename(_file)
+                    destination = "{top}/nexus/{element}/{region}/output/{base}".format(
+                        top     = remote_top_directory,
+                        element = element,
+                        region  = region,
+                        base    = base
+                    )
+                    trnsf_str = "{}\t{}\n".format(_file, destination)
+                    _trnsf.write(trnsf_str)
+
+                    directory = os.path.dirname(_file)
+
+                    # Get the config files:
+                    init = glob.glob(directory + init_match)[0]
+                    base = os.path.basename(init)
+                    destination = "{top}/nexus/{element}/{region}/config/{base}".format(
+                        top     = remote_top_directory,
+                        element = element,
+                        region  = region,
+                        base    = base
+                    )
+                    trnsf_str = "{}\t{}\n".format(init, destination)
+                    _trnsf.write(trnsf_str)
+
+                    cfg  = glob.glob(directory + config_match)[0]
+                    base = os.path.basename(cfg)
+                    destination = "{top}/nexus/{element}/{region}/config/{base}".format(
+                        top     = remote_top_directory,
+                        element = element,
+                        region  = region,
+                        base    = base
+                    )
+                    trnsf_str = "{}\t{}\n".format(cfg, destination)
+                    _trnsf.write(trnsf_str)
+
+                    # Get the log files:
+                    logs = glob.glob(directory + log_match)
+                    for log in logs:
+                        base = os.path.basename(log)
+                        destination = "{top}/nexus/{element}/{region}/log/{base}".format(
+                            top     = remote_top_directory,
+                            element = element,
+                            region  = region,
+                            base    = base
+                        )
+                        trnsf_str = "{}\t{}\n".format(log, destination)
+                        _trnsf.write(trnsf_str)
+                break
+
+    print "Done making transfer list"
 def main(info_only):
 
     # if action not in ['--submit', '--status', '--check']:
@@ -114,12 +207,12 @@ def main(info_only):
                 if n_jobs_succeeded == n_jobs:
                     print bcolors.OKGREEN  + "{} - {} SUCCESS".format(element, region) + bcolors.ENDC
                     insertion_sql = '''
-                        INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs)
-                        VALUES (?, ?, ?, ?, ?, ?)
+                        INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs_submitted, n_jobs_succeeded)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
                     '''
                     conn = connect()
                     curr = conn.cursor()
-                    tupl = (stage.output_dataset(), element, region, int(total_events_submitted), int(total_events_produced), int(n_jobs))
+                    tupl = (stage.output_dataset(), element, region, int(total_events_submitted), int(total_events_produced), int(n_jobs), int(n_jobs_succeeded))
                     curr.execute(insertion_sql, tupl)
                     conn.commit()
                     conn.close()
@@ -179,6 +272,9 @@ if __name__ == '__main__':
         os.path.remove('next_new_bkg.db')
     except:
         pass
-    connect()
-    init_db()
-    main(info_only = True)
+
+    # connect()
+    # init_db()
+    # main(info_only = False)
+
+    move_files_to_neutrino()
