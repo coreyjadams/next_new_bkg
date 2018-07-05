@@ -117,9 +117,12 @@ def main(info_only):
                         INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs)
                         VALUES (?, ?, ?, ?, ?, ?)
                     '''
-                    curr = connect().cursor()
+                    conn = connect()
+                    curr = conn.cursor()
                     tupl = (stage.output_dataset(), element, region, int(total_events_submitted), int(total_events_produced), int(n_jobs))
                     curr.execute(insertion_sql, tupl)
+                    conn.commit()
+                    conn.close()
 
                 elif n_jobs_succeeded == 0:
                     print bcolors.WARNING  + "{} - {} RESUBMIT".format(element, region) + bcolors.ENDC
