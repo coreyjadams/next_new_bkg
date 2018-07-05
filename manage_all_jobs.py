@@ -4,7 +4,7 @@ import time
 import sqlite3
 import glob
 
-from configuration import regions, isotopes, event_count, atomic_numbers, mass_numbers, bcolors
+from configuration import regions, isotopes, event_count, atomic_numbers, mass_numbers, bcolors, cd
 
 from database import DatasetReader, ProjectReader
 from config import ProjectConfig
@@ -69,7 +69,7 @@ def move_files_to_neutrino():
 
     remote_host = 'cadams@neutrinos1.ific.uv.es'
     local_top_directory  = '/n/holylfs02/LABS/guenette_lab/data/NEXT/NEXTNEW/MC/OtherForTransfer/'
-    remote_top_directory = '/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/'
+    remote_top_directory = '/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/'
 
 
     # We want to copy, for every project here (76 + Xenon, eventually)
@@ -147,6 +147,7 @@ def move_files_to_neutrino():
 
                     # Get the log files:
                     logs = glob.glob(directory + log_match)
+                    print logs
                     for log in logs:
                         base = os.path.basename(log)
                         destination = "{top}/nexus/{element}/{region}/log/{base}".format(
@@ -173,6 +174,12 @@ def move_files_to_neutrino():
             except:
                 pass
             os.symlink(original, destination)
+
+    with cd(local_top_directory):
+        rsync_command = '''
+            rsync -rL nexus cadams@neutrinos1.ific.uv.es:/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/
+        '''
+
 
 
 
