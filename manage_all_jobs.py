@@ -105,7 +105,7 @@ def move_files_to_neutrino():
                 config_match = '/*config.mac'
                 init_match = '/*init.mac'
 
-                log_match = '*.log'
+                log_match = '/*.log'
 
                 output_file_list = dr.list_file_locations(dataset)
                 for _file in output_file_list:
