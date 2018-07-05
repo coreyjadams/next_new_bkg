@@ -103,6 +103,7 @@ def move_files_to_neutrino():
 
                 output_file_list = dr.list_file_locations(dataset)
                 for _file in output_file_list:
+                    _file = _file[0]
                     base = os.path.basename(_file)
                     destination = "{top}/nexus/{element}/{region}/output/{base}".format(
                         top     = remote_top_directory,
