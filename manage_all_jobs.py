@@ -147,8 +147,6 @@ def move_files_to_neutrino():
 
                     # Get the log files:
                     logs = glob.glob(directory + log_match)
-                    print directory + log_match
-                    print logs
                     for log in logs:
                         base = os.path.basename(log)
                         destination = "{top}/nexus/{element}/{region}/log/{base}".format(
@@ -166,8 +164,6 @@ def move_files_to_neutrino():
     with open('transfer_protocol.txt', 'r') as _trnsf:
         for line in _trnsf.readlines():
             original, destination = line.rstrip('\n').split('\t')
-            print original
-            print destination
 
             destdir = os.path.dirname(destination)
             try:
@@ -179,9 +175,11 @@ def move_files_to_neutrino():
             except:
                 pass
 
+    print "Beginning file transfer."
+
     with cd(local_top_directory):
 
-        command = ['rsync', '-rL', 'nexus', 'cadams@neutrinos1.ific.uv.es:/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/']
+        command = ['rsync', '-rvL', 'nexus', 'cadams@neutrinos1.ific.uv.es:/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/']
 
         proc = subprocess.Popen(command,
                                 stdout = subprocess.PIPE,
