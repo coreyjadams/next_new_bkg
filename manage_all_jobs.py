@@ -147,6 +147,7 @@ def move_files_to_neutrino():
 
                     # Get the log files:
                     logs = glob.glob(directory + log_match)
+                    print directory + log_match
                     print logs
                     for log in logs:
                         base = os.path.basename(log)
@@ -164,7 +165,7 @@ def move_files_to_neutrino():
 
     with open('transfer_protocol.txt', 'r') as _trnsf:
         for line in _trnsf.readlines():
-            original, destination = line.split('\t')
+            original, destination = line.rstrip('\n').split('\t')
             print original
             print destination
 
