@@ -83,7 +83,7 @@ def main():
             pc = ProjectConfig(yml_name)
             stage = pc.stage(element)
 
-            print stage.output_dataset()
+            # print stage.output_dataset()
 
             # First, check if this project is in the database:
             if stage.output_dataset() in datasets:
@@ -112,7 +112,7 @@ def main():
                 # it's done.
 
                 if n_jobs_succeeded == n_jobs:
-                    print bcolors.OKGREEN  + "{} - {} SUCCESS" + bcolors.ENDC
+                    print bcolors.OKGREEN  + "{} - {} SUCCESS".format(element, region) + bcolors.ENDC
                     insertion_sql = '''
                         INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs)
                         VALUES (?, ?, ?, ?, ?, ?)
@@ -122,17 +122,17 @@ def main():
                     curr.execute(insertion_sql, tupl)
 
                 elif n_jobs_succeeded == 0:
-                    print bcolors.WARNING  + "{} - {} RESUBMIT" + bcolors.ENDC
+                    print bcolors.WARNING  + "{} - {} RESUBMIT".format(element, region) + bcolors.ENDC
                     # clean and resubmit
                     ph = ProjectHandler(yml_name, action='clean', stage=element)
                     ph.act()
                     ph = ProjectHandler(yml_name, action='submit', stage=element)
                 else:
-                    print bcolors.FAIL  + "{} - {} MAKEUP NEEDED" + bcolors.ENDC
+                    print bcolors.FAIL  + "{} - {} MAKEUP NEEDED".format(element, region) + bcolors.ENDC
                     # Doing makeup jobs, just report it:
             else:
                 # Need to submit it for the first time.
-                print bcolors.OKBLUE  + "{} - {} SUBMITTING" + bcolors.ENDC
+                print bcolors.OKBLUE  + "{} - {} SUBMITTING".format(element, region) + bcolors.ENDC
                 ph = ProjectHandler(yml_name, action='submit', stage=element)
                 ph.act()
             # Find out how many
