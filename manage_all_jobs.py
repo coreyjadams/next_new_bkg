@@ -174,13 +174,42 @@ def move_files_to_neutrino():
                 os.makedirs(destdir)
             except:
                 pass
-            os.symlink(original, destination)
+            try:
+                os.symlink(original, destination)
+            except:
+                pass
 
     with cd(local_top_directory):
-        rsync_command = '''
-            rsync -rL nexus cadams@neutrinos1.ific.uv.es:/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/
-        '''
 
+        command = ['rsync', '-rL', 'nexus', 'cadams@neutrinos1.ific.uv.es:/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/NEXUS_NEXT_v1_03_01/']
+
+        proc = subprocess.Popen(command,
+                                stdout = subprocess.PIPE,
+                                stderr = subprocess.PIPE,
+                                env = dict(os.environ))
+
+        retval=proc.poll()
+
+        # the loop executes to wait till the command finish running
+        stdout=''
+        stderr=''
+        while retval is None:
+            time.sleep(1.0)
+            # while waiting, fetch stdout (including STDERR) to avoid crogging the pipe
+            for line in iter(proc.stdout.readline, b''):
+                stdout += line
+            for line in iter(proc.stderr.readline, b''):
+                stderr += line
+            # update the return value
+            retval = proc.poll()
+
+        return_code = proc.returncode
+
+        if return_code != 0:
+            raise Exception("Failed")
+
+        else:
+            print stdout
 
 
 
