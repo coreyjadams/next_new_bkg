@@ -3,7 +3,7 @@ import subprocess
 import time
 import sqlite3
 
-from configuration import regions, isotopes, event_count, atomic_numbers, mass_numbers
+from configuration import regions, isotopes, event_count, atomic_numbers, mass_numbers, bcolors
 
 from database import DatasetReader, ProjectReader
 from config import ProjectConfig
@@ -101,17 +101,18 @@ def main():
                 # and how many events were produced:
                 n_jobs_succeeded = dr.get_n_successful_jobs(stage.output_dataset())
 
-                print "For dataset {}, {} of {} jobs completed".format(
-                    stage.output_dataset(),
-                    n_jobs_succeeded, n_jobs)
-                print "  {} of {} events passed the selection".format(
-                    total_events_produced,
-                    total_events_submitted)
+                # print "For dataset {}, {} of {} jobs completed".format(
+                #     stage.output_dataset(),
+                #     n_jobs_succeeded, n_jobs)
+                # print "  {} of {} events passed the selection".format(
+                #     total_events_produced,
+                #     total_events_submitted)
 
                 # If the number of jobs completed equals the number of jobs submitted,
                 # it's done.
 
                 if n_jobs_succeeded == n_jobs:
+                    print bcolors.OKGREEN  + "{} - {} SUCCESS" + bcolors.ENDC
                     insertion_sql = '''
                         INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs)
                         VALUES (?, ?, ?, ?, ?, ?)
@@ -121,19 +122,19 @@ def main():
                     curr.execute(insertion_sql, tupl)
 
                 elif n_jobs_succeeded == 0:
-                    print "Completely resubmitting {}".format(stage.output_dataset())
+                    print bcolors.WARNING  + "{} - {} RESUBMIT" + bcolors.ENDC
                     # clean and resubmit
                     ph = ProjectHandler(yml_name, action='clean', stage=element)
                     ph.act()
                     ph = ProjectHandler(yml_name, action='submit', stage=element)
                 else:
+                    print bcolors.FAIL  + "{} - {} MAKEUP NEEDED" + bcolors.ENDC
                     # Doing makeup jobs, just report it:
-                    print "Requires makeup jobs"
             else:
                 # Need to submit it for the first time.
+                print bcolors.OKBLUE  + "{} - {} SUBMITTING" + bcolors.ENDC
                 ph = ProjectHandler(yml_name, action='submit', stage=element)
                 ph.act()
-                print "Nothing submitted."
             # Find out how many
 
 
