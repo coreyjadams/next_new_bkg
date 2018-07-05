@@ -263,7 +263,7 @@ def main(info_only):
                 # If the number of jobs completed equals the number of jobs submitted,
                 # it's done.
 
-                if n_jobs_succeeded == n_jobs:
+                if n_jobs_succeeded >= 0.95*n_jobs:
                     print bcolors.OKGREEN  + "{} - {} SUCCESS".format(element, region) + bcolors.ENDC
                     insertion_sql = '''
                         INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, events_per_job, n_jobs_submitted, n_jobs_succeeded)
