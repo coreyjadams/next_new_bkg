@@ -166,6 +166,12 @@ def move_files_to_neutrino():
             original, destination = line.split('\t')
             print original
             print destination
+
+            destdir = os.path.dirname(destination)
+            try:
+                os.mkdir(destdir)
+            except:
+                pass
             os.symlink(original, destination)
 
 
