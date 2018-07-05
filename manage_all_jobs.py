@@ -169,7 +169,7 @@ def move_files_to_neutrino():
 
             destdir = os.path.dirname(destination)
             try:
-                os.mkdir(destdir)
+                os.makedirs(destdir)
             except:
                 pass
             os.symlink(original, destination)
