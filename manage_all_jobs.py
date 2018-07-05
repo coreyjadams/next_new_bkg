@@ -32,7 +32,8 @@ def init_db():
             region TEXT,
             n_simulated INTEGER,
             n_passed INTEGER,
-            n_jobs_submitted, INTEGER,
+            events_per_job INTEGER,
+            n_jobs_submitted INTEGER,
             n_jobs_succeeded INTEGER,
             PRIMARY KEY(id)
         )
@@ -265,12 +266,12 @@ def main(info_only):
                 if n_jobs_succeeded == n_jobs:
                     print bcolors.OKGREEN  + "{} - {} SUCCESS".format(element, region) + bcolors.ENDC
                     insertion_sql = '''
-                        INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, n_jobs_submitted, n_jobs_succeeded)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO next_new_bkg_summary(dataset, element, region, n_simulated, n_passed, events_per_job, n_jobs_submitted, n_jobs_succeeded)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     '''
                     conn = connect()
                     curr = conn.cursor()
-                    tupl = (stage.output_dataset(), element, region, int(total_events_submitted), int(total_events_produced), int(n_jobs), int(n_jobs_succeeded))
+                    tupl = (stage.output_dataset(), element, region, int(total_events_submitted), int(total_events_produced), int(stage.events_per_job()) int(n_jobs), int(n_jobs_succeeded))
                     curr.execute(insertion_sql, tupl)
                     conn.commit()
                     conn.close()
@@ -331,8 +332,8 @@ if __name__ == '__main__':
     except:
         pass
 
-    # connect()
-    # init_db()
-    # main(info_only = False)
+    connect()
+    init_db()
+    main(info_only = True)
 
-    move_files_to_neutrino()
+    # move_files_to_neutrino()
