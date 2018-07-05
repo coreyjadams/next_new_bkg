@@ -67,6 +67,7 @@ def move_files_to_neutrino():
     dr = DatasetReader()
 
     remote_host = 'cadams@neutrinos1.ific.uv.es'
+    local_top_directory  = '/n/holylfs02/LABS/guenette_lab/data/NEXT/NEXTNEW/MC/OtherForTransfer/'
     remote_top_directory = '/lustre/neu/data4/NEXT/NEXTNEW/MC/Other/'
 
 
@@ -79,8 +80,12 @@ def move_files_to_neutrino():
     # remote_top_directory/nexus/{element}/{region}/config
 
     # The config files, logs, and output all live in the same directory.  So, what this script does
-    # is to generate a list files to/from for transfering.
-    # In otherwords, it will make a single text file that dictates the entire transfer.
+    # is to generate a list files to/from for transfering.  It creates symbolic links to
+    # the local files in the right directory structure as needed on neutrinos.
+
+    # The way this is done is to generate a file that will be used for creating symlinks
+    # A process is spawned to make the links
+    # Finally, a job is submitted to do the rsync command.
 
     with open('transfer_protocol.txt', 'w') as _trnsf:
 
@@ -106,7 +111,7 @@ def move_files_to_neutrino():
                     _file = _file[0]
                     base = os.path.basename(_file)
                     destination = "{top}/nexus/{element}/{region}/output/{base}".format(
-                        top     = remote_top_directory,
+                        top     = local_top_directory,
                         element = element,
                         region  = region,
                         base    = base
@@ -120,7 +125,7 @@ def move_files_to_neutrino():
                     init = glob.glob(directory + init_match)[0]
                     base = os.path.basename(init)
                     destination = "{top}/nexus/{element}/{region}/config/{base}".format(
-                        top     = remote_top_directory,
+                        top     = local_top_directory,
                         element = element,
                         region  = region,
                         base    = base
@@ -131,7 +136,7 @@ def move_files_to_neutrino():
                     cfg  = glob.glob(directory + config_match)[0]
                     base = os.path.basename(cfg)
                     destination = "{top}/nexus/{element}/{region}/config/{base}".format(
-                        top     = remote_top_directory,
+                        top     = local_top_directory,
                         element = element,
                         region  = region,
                         base    = base
@@ -144,7 +149,7 @@ def move_files_to_neutrino():
                     for log in logs:
                         base = os.path.basename(log)
                         destination = "{top}/nexus/{element}/{region}/log/{base}".format(
-                            top     = remote_top_directory,
+                            top     = local_top_directory,
                             element = element,
                             region  = region,
                             base    = base
@@ -153,7 +158,17 @@ def move_files_to_neutrino():
                         _trnsf.write(trnsf_str)
                 break
 
-    print "Done making transfer list"
+    print "Done making transfer list, creating symbolic links"
+
+    with open('transfer_protocol.txt', 'r') as _trnsf:
+        for line in _trnsf.readlines():
+            original, destination = line.split('\t')
+            print original
+            print destination
+            os.symlink(original, destination)
+
+
+
 def main(info_only):
 
     # if action not in ['--submit', '--status', '--check']:
